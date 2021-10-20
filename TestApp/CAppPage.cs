@@ -58,16 +58,16 @@ namespace TestApp
             throw new System.NotImplementedException();
         }
 
-        public override void KeyPressed(ConsoleKey keyEvent)
+        public override void KeyPressed(ConsoleKeyInfo keyInfo)
         {
-            if(keyEvent == ConsoleKey.Tab)
+            if(keyInfo.Key == ConsoleKey.Tab)
             {
                 m_focusedPanelIndex = (m_focusedPanelIndex == (int)PanelIndex.cClass) ? (int)PanelIndex.cSubclass : (int)PanelIndex.cClass;
                 FireFocusChangeEvent(m_panels[m_focusedPanelIndex].PanelType);
             }
             else
             {
-                m_panels[m_focusedPanelIndex].KeyPressed(keyEvent);
+                m_panels[m_focusedPanelIndex].KeyPressed(keyInfo);
             }
         }
 

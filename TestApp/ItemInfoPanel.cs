@@ -80,26 +80,33 @@ namespace TestApp
 
         public override void Redraw(bool fullRedraw)
         {
+            int startX = m_area.x;
+            int startY = m_area.y;
+            int lengthX = (LeftBorder) ? m_area.width - 1 : m_area.width;
+
             // Background and borders
-            CConsoleEx.DrawColourRect(m_area, m_parent.GetColour(ColourThemeIndex.cPanelMainBG));
-            if(BottomBorder)
+            //CConsoleEx.DrawColourRect(m_area, m_parent.GetColour(ColourThemeIndex.cPanelMainBG));
+            CConsoleEx.DrawColourRect(m_area, ConsoleColor.Red);
+            if(TopBorder)
             {
-                CConsoleEx.DrawHorizontalLine(m_area.x, m_area.Bottom - 1, m_area.width, m_parent.GetColour(ColourThemeIndex.cPanelBorderBG), m_parent.GetColour(ColourThemeIndex.cPanelBorderFG));
+                CConsoleEx.DrawHorizontalLine(startX, startY, lengthX, m_parent.GetColour(ColourThemeIndex.cPanelBorderBG), m_parent.GetColour(ColourThemeIndex.cPanelBorderFG));
+                startY++;
             }
-            if(RightBorder)
+            if(LeftBorder)
             {
-                CConsoleEx.DrawVerticalLine(m_area.Right - 1, m_area.y, m_area.height, m_parent.GetColour(ColourThemeIndex.cPanelBorderBG), m_parent.GetColour(ColourThemeIndex.cPanelBorderFG));
+                CConsoleEx.DrawVerticalLine(startX, startY, m_area.height, m_parent.GetColour(ColourThemeIndex.cPanelBorderBG), m_parent.GetColour(ColourThemeIndex.cPanelBorderFG));
+                startX++;
             }
 
             // Panel header
-            CConsoleEx.WriteText(m_title, m_area.x, m_area.y, 1 /*CONSTANT*/, m_area.width, m_parent.GetColour(ColourThemeIndex.cPanelBorderBG), m_parent.GetColour(ColourThemeIndex.cPanelBorderFG));
+            CConsoleEx.WriteText(m_title, startX, startY, 1 /*CONSTANT*/, lengthX, m_parent.GetColour(ColourThemeIndex.cPanelBorderBG), m_parent.GetColour(ColourThemeIndex.cPanelBorderFG));
+            startY++;
 
             // Content
-            int row = m_area.y + 1;
-            CConsoleEx.WriteText(m_currentItem.itemClass,                          m_area.x + 1, row++, 1 /*CONSTANT*/, m_area.width - 1, m_parent.GetColour(ColourThemeIndex.cPanelMainBG), m_parent.GetColour(ColourThemeIndex.cPanelMainFG));
-            CConsoleEx.WriteText(m_currentItem.itemName,                           m_area.x + 1, row++, 1 /*CONSTANT*/, m_area.width - 1, m_parent.GetColour(ColourThemeIndex.cPanelMainBG), m_parent.GetColour(ColourThemeIndex.cPanelMainFG));
-            CConsoleEx.WriteText(m_currentItem.itemCounter.ToString(),             m_area.x + 1, row++, 1 /*CONSTANT*/, m_area.width - 1, m_parent.GetColour(ColourThemeIndex.cPanelMainBG), m_parent.GetColour(ColourThemeIndex.cPanelMainFG));
-            CConsoleEx.WriteText((m_currentItem.isActive) ? "active" : "inactive", m_area.x + 1, row++, 1 /*CONSTANT*/, m_area.width - 1, m_parent.GetColour(ColourThemeIndex.cPanelMainBG), m_parent.GetColour(ColourThemeIndex.cPanelMainFG));
+            CConsoleEx.WriteText(m_currentItem.itemClass,                          startX, startY++, 1 /*CONSTANT*/, lengthX, m_parent.GetColour(ColourThemeIndex.cPanelMainBG), m_parent.GetColour(ColourThemeIndex.cPanelMainFG));
+            CConsoleEx.WriteText(m_currentItem.itemName,                           startX, startY++, 1 /*CONSTANT*/, lengthX, m_parent.GetColour(ColourThemeIndex.cPanelMainBG), m_parent.GetColour(ColourThemeIndex.cPanelMainFG));
+            CConsoleEx.WriteText(m_currentItem.itemCounter.ToString(),             startX, startY++, 1 /*CONSTANT*/, lengthX, m_parent.GetColour(ColourThemeIndex.cPanelMainBG), m_parent.GetColour(ColourThemeIndex.cPanelMainFG));
+            CConsoleEx.WriteText((m_currentItem.isActive) ? "active" : "inactive", startX, startY++, 1 /*CONSTANT*/, lengthX, m_parent.GetColour(ColourThemeIndex.cPanelMainBG), m_parent.GetColour(ColourThemeIndex.cPanelMainFG));
         }
     }
 }

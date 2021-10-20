@@ -18,8 +18,8 @@ namespace ConsoleUI
 
         public int PercentWidth  { get; protected set; }
         public int PercentHeight { get; protected set; }
-        public bool RightBorder  { protected get; set; }
-        public bool BottomBorder { protected get; set; }
+        public bool LeftBorder { protected get; set; }
+        public bool TopBorder { protected get; set; }
 
         public PanelTypeCode PanelType { get { return m_panelType; } }
 
@@ -34,8 +34,8 @@ namespace ConsoleUI
 
             PercentWidth  = percentWidth;
             PercentHeight = percentHeight;
-            RightBorder   = true;
-            BottomBorder  = true;
+            LeftBorder = true;
+            TopBorder  = true;
 
             m_focusedElementIndex = M_FOCUSED_ELEMENT_NONE;
             m_isFocused           = false;
@@ -76,22 +76,30 @@ namespace ConsoleUI
         {
             if(fullRedraw)
             {
+                int startX = m_area.x;
+                int startY = m_area.y;
+                int lengthX = m_area.width;
+
                 // Background and borders
                 CConsoleEx.DrawColourRect(m_area, m_parent.GetColour(ColourThemeIndex.cPanelMainBG));
-                if(BottomBorder)
+                if(TopBorder)
                 {
-                    CConsoleEx.DrawHorizontalLine(m_area.x, m_area.height - 1, m_area.width, m_parent.GetColour(ColourThemeIndex.cPanelBorderBG), m_parent.GetColour(ColourThemeIndex.cPanelBorderFG));
+                    CConsoleEx.DrawHorizontalLine(startX, startY, lengthX, m_parent.GetColour(ColourThemeIndex.cPanelBorderBG), m_parent.GetColour(ColourThemeIndex.cPanelBorderFG));
+                    startY++;
                 }
-                if(RightBorder)
+                if(LeftBorder)
                 {
-                    CConsoleEx.DrawVerticalLine(m_area.width - 1, m_area.y, m_area.height, m_parent.GetColour(ColourThemeIndex.cPanelBorderBG), m_parent.GetColour(ColourThemeIndex.cPanelBorderFG));
+                    CConsoleEx.DrawVerticalLine(startX, startY, m_area.height, m_parent.GetColour(ColourThemeIndex.cPanelBorderBG), m_parent.GetColour(ColourThemeIndex.cPanelBorderFG));
+                    startX++;
+                    lengthX--;
                 }
 
                 // Panel header
-                CConsoleEx.WriteText(m_title, m_area.x, m_area.y, 1 /*CONSTANT*/, m_area.width, m_parent.GetColour(ColourThemeIndex.cPanelBorderBG), m_parent.GetColour(ColourThemeIndex.cPanelBorderFG));
+                CConsoleEx.WriteText(m_title, startX, startY, 1 /*CONSTANT*/, lengthX, m_parent.GetColour(ColourThemeIndex.cPanelBorderBG), m_parent.GetColour(ColourThemeIndex.cPanelBorderFG));
+                startY++;
 
                 // Panel content
-                for(int row = m_area.y + 1, i = 0; row < m_area.y + m_area.height && i < m_panelElements.Length; row++, i++)
+                for(int row = startY, i = 0; row < m_area.Bottom && i < m_panelElements.Length; row++, i++)
                 {
                     ColourThemeIndex background;
                     ColourThemeIndex foreground;
@@ -108,27 +116,31 @@ namespace ConsoleUI
                     } 
                     
                     // TODO: Fix constants
-                    CConsoleEx.WriteText(m_panelElements[i], m_area.x, row, 1 /*CONSTANT*/, m_area.width - 1, m_parent.GetColour(background), m_parent.GetColour(foreground));
+                    CConsoleEx.WriteText(m_panelElements[i], startX, row, 1 /*CONSTANT*/, lengthX, m_parent.GetColour(background), m_parent.GetColour(foreground));
                 }
             }
             else if(m_focusedElementIndex != M_FOCUSED_ELEMENT_NONE)
             {
+                int startX = (LeftBorder) ? m_area.x + 1 : m_area.x;
+                int startY = (TopBorder)  ? m_area.y + 1 : m_area.y;
+                int lengthX = (LeftBorder) ? m_area.width - 1 : m_area.width;
+
                 ColourThemeIndex backgroundSelection = (m_isFocused) ? ColourThemeIndex.cPanelSelectFocusBG : ColourThemeIndex.cPanelSelectBG;
                 ColourThemeIndex foregroundSelection = (m_isFocused) ? ColourThemeIndex.cPanelSelectFocusFG : ColourThemeIndex.cPanelSelectFG;
 
-                int currentItemY = m_area.y + m_focusedElementIndex + 1;
-                CConsoleEx.WriteText(m_panelElements[m_focusedElementIndex], m_area.x, currentItemY, 1 /*CONSTANT*/, m_area.width - 1, m_parent.GetColour(backgroundSelection), m_parent.GetColour(foregroundSelection));
+                int currentItemY = startY + m_focusedElementIndex + 1;
+                CConsoleEx.WriteText(m_panelElements[m_focusedElementIndex], startX, currentItemY, 1 /*CONSTANT*/, lengthX, m_parent.GetColour(backgroundSelection), m_parent.GetColour(foregroundSelection));
 
                 if(m_focusedElementIndex > 0)
                 {
-                    int adjecentItemY = m_area.y + m_focusedElementIndex;
-                    CConsoleEx.WriteText(m_panelElements[m_focusedElementIndex - 1], m_area.x, adjecentItemY, 1 /*CONSTANT*/, m_area.width - 1, m_parent.GetColour(ColourThemeIndex.cPanelMainBG), m_parent.GetColour(ColourThemeIndex.cPanelMainFG));
+                    int adjecentItemY = startY + m_focusedElementIndex;
+                    CConsoleEx.WriteText(m_panelElements[m_focusedElementIndex - 1], startX, adjecentItemY, 1 /*CONSTANT*/, lengthX, m_parent.GetColour(ColourThemeIndex.cPanelMainBG), m_parent.GetColour(ColourThemeIndex.cPanelMainFG));
                 }
 
                 if(m_focusedElementIndex < m_panelElements.Length - 1)
                 {
-                    int adjecentItemY = m_area.y + m_focusedElementIndex + 2;
-                    CConsoleEx.WriteText(m_panelElements[m_focusedElementIndex + 1], m_area.x, adjecentItemY, 1 /*CONSTANT*/, m_area.width - 1, m_parent.GetColour(ColourThemeIndex.cPanelMainBG), m_parent.GetColour(ColourThemeIndex.cPanelMainFG));
+                    int adjecentItemY = startY + m_focusedElementIndex + 2;
+                    CConsoleEx.WriteText(m_panelElements[m_focusedElementIndex + 1], startX, adjecentItemY, 1 /*CONSTANT*/, lengthX, m_parent.GetColour(ColourThemeIndex.cPanelMainBG), m_parent.GetColour(ColourThemeIndex.cPanelMainFG));
                 }
             }
         }
@@ -158,9 +170,9 @@ namespace ConsoleUI
         }
 
         // Abstract inferface implementation
-        public void KeyPressed(ConsoleKey keyEvent)
+        public void KeyPressed(ConsoleKeyInfo keyInfo)
         {
-            switch(keyEvent)
+            switch(keyInfo.Key)
             {
                 case ConsoleKey.UpArrow:
                 {

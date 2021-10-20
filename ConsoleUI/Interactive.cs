@@ -5,6 +5,6 @@
     /// </summary>
     public interface IInteractive
     {
-        public abstract void KeyPressed(System.ConsoleKey keyEvent);
+        public abstract void KeyPressed(System.ConsoleKeyInfo keyInfo);
     }
 }

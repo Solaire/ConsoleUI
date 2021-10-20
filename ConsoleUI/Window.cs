@@ -59,7 +59,7 @@ namespace ConsoleUI
                     m_pages[m_activePageIndex].Redraw(false);  
                 }
                 */
-                m_pages[m_activePageIndex].KeyPressed(keyInfo.Key);
+                m_pages[m_activePageIndex].KeyPressed(keyInfo);
                 m_pages[m_activePageIndex].Redraw(false);
             }
         }

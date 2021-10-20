@@ -58,13 +58,11 @@ namespace ConsoleUI
                 ConsolePoint topRight   = new ConsolePoint(nextPoint.x + nextWidth, nextPoint.y);
                 ConsolePoint bottomLeft = new ConsolePoint(nextPoint.x, nextPoint.y + nextHeight);
 
-                m_panels[i].RightBorder  = topRight.IsWithinArea(m_area);
-                m_panels[i].BottomBorder = bottomLeft.IsWithinArea(m_area);
+                m_panels[i].LeftBorder = nextPoint.x != 0;
+                m_panels[i].TopBorder  = nextPoint.y != 0;
 
                 if(i == m_panels.Length - 1)
                 {
-                    m_panels[i].RightBorder  = false;
-                    m_panels[i].BottomBorder = false;
                     break; // Last panel, don't bother with borders
                 }
                 else if(topRight.IsWithinArea(m_area)) // Next panel to the right
@@ -106,6 +104,6 @@ namespace ConsoleUI
             }
         }
 
-        public abstract void KeyPressed(ConsoleKey keyEvent);
+        public abstract void KeyPressed(ConsoleKeyInfo keyInfo);
     }
 }
