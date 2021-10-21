@@ -1,4 +1,5 @@
-﻿using ConsoleUI.Structs;
+﻿using ConsoleUI;
+using ConsoleUI.Structs;
 
 namespace TestApp
 {
@@ -11,11 +12,11 @@ namespace TestApp
         public static int TEXT_PADDING_RIGHT = 1;
 
         // Initialise the panel array and each individual panel
-        public static readonly PanelData[] PANEL_DATA =
+        public static readonly CControl.ControlData[] CONTROL_DATA =
         {
-            new PanelData(PanelType.CLASS_PANEL,    "Class",     50, 100),
-            new PanelData(PanelType.SUBCLASS_PANEL, "Subclass",  50, 70),
-            new PanelData(PanelType.INFO_PANEL,     "Item info", 50, 30),
+            new CControl.ControlData(ControlType.CLASS_PANEL,    "Class",     50, 100),
+            new CControl.ControlData(ControlType.SUBCLASS_PANEL, "Subclass",  50, 70),
+            new CControl.ControlData(ControlType.INFO_PANEL,     "Item info", 50, 30),
         };
 
         private static readonly System.ConsoleColor[] DEFAULT_COLOUR_ARRAY =

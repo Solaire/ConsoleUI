@@ -1,7 +1,4 @@
-﻿/// <summary>
-/// Namespace containing various structures
-/// </summary>
-namespace ConsoleUI.Structs
+﻿namespace ConsoleUI.Structs
 {
     /// <summary>
     /// A rectangle structure used for drawing and creating areas
@@ -60,8 +57,8 @@ namespace ConsoleUI.Structs
 
         public bool IsWithinArea(ConsoleRect area)
         {
-            bool isValidWidth  = (x >= 0 && x < area.Right);
-            bool isValidHeight = (y >= 0 && y < area.Bottom);
+            bool isValidWidth  = (x >= area.x && x < area.Right);
+            bool isValidHeight = (y >= area.y && y < area.Bottom);
             return (isValidWidth && isValidHeight);
         }
     }
@@ -116,47 +113,6 @@ namespace ConsoleUI.Structs
                 throw new System.ArgumentException("Colour theme must have at least two (2) colours - default background and foreground");
             }
             m_colours = colours;
-        }
-    }
-
-    /// <summary>
-    /// Struct holding information about given TUI panels
-    /// </summary>
-    public struct PanelData
-    {
-        public PanelTypeCode type;
-        public string        title;
-        public int           percentWidth;
-        public int           percentHeight;
-
-        public PanelData(PanelTypeCode type, string title, int percentWidth, int percentHeight)
-        {
-            this.type = type;
-            this.title = title;
-            this.percentWidth = percentWidth;
-            this.percentHeight = percentHeight;
-        }
-    }
-
-    /// <summary>
-    /// Abstract class representing a panel type enumeration
-    /// </summary>
-    public class PanelTypeCode
-    {
-        public byte Code { get; private set; }
-        public PanelTypeCode(byte code)
-        {
-            Code = code;
-        }
-
-        public static bool operator==(PanelTypeCode a, PanelTypeCode b)
-        {
-            return a.Code == b.Code;
-        }
-
-        public static bool operator!=(PanelTypeCode a, PanelTypeCode b)
-        {
-            return a.Code != b.Code;
         }
     }
 

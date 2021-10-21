@@ -4,72 +4,77 @@ using System;
 
 namespace ConsoleUI
 {
-    public abstract class CPage : CElement, IInteractive
+    /// <summary>
+    /// Container class for multiple UI components
+    /// </summary>
+    public abstract class CPage : CComponent
     {
-        protected CWindow  m_parent;
-        protected CPanel[] m_panels;
-        protected int      m_focusedPanelIndex;
+        protected readonly CFrame m_parent;
 
-        protected delegate void FocusChangeEventHandler(object sender, GenericEventArgs<PanelTypeCode> e);
+        protected CControl[] m_controls;
+        protected int        m_focusedComponent;
+
+        protected delegate void FocusChangeEventHandler(object sender, GenericEventArgs<CControl.ControlTypeCode> e);
         protected event FocusChangeEventHandler FocusChange;
 
-        public CPage(CWindow parent, ConsoleRect area, string title, int panelCount) : base(area, title)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="title">The page title</param>
+        /// <param name="rect">The page size</param>
+        /// <param name="componentCount">Number of components</param>
+        /// <param name="parent">Reference to a parent frame</param>
+        public CPage(string title, ConsoleRect rect, int componentCount, CFrame parent) : base(title, rect)
         {
+            m_focusedComponent = 0;
+            m_controls = new CControl[componentCount];
             m_parent = parent;
-            m_panels = new CPanel[panelCount];
-            m_focusedPanelIndex = 0;
         }
 
-        protected virtual void FireFocusChangeEvent(PanelTypeCode focusedPanel)
+        /// <summary>
+        /// Fire FocusChange event to all subscribed instances
+        /// </summary>
+        /// <param name="focusedComponentType">The component type that will be marked as in focus</param>
+        protected virtual void FireFocusChangeEvent(CControl.ControlTypeCode focusedComponentType)
         {
             if(FocusChange != null)
             {
-                FocusChange.Invoke(this, new GenericEventArgs<PanelTypeCode>(focusedPanel));
+                FocusChange.Invoke(this, new GenericEventArgs<CControl.ControlTypeCode>(focusedComponentType));
             }
         }
 
-        public abstract void Initialise(PanelTypeCode[] panelTypes);
-
-        public virtual void Update()
+        /// <summary>
+        /// Calculate and set the size/positioning of each component
+        /// The size values of each component is the percentage of the page they take
+        /// Each component is layed out right -> left, top -> bottom (comic book style),
+        /// starting from the first element.
+        /// </summary>
+        protected void CalculateComponentPositions()
         {
-            foreach(CPanel panel in m_panels)
+            ConsolePoint nextPoint = new ConsolePoint(m_rect.x, m_rect.y);
+
+            for(int i = 0; i < m_controls.Length; i++)
             {
-                if(panel != null)
-                {
-                    panel.Update();
-                }
-            }
-        }
+                int nextWidth  = Math.Min((int)(((float)m_rect.width  / 100f) * m_controls[i].PercentWidth),  m_rect.width  - nextPoint.x);
+                int nextHeight = Math.Min((int)(((float)m_rect.height / 100f) * m_controls[i].PercentHeight), m_rect.height - nextPoint.y);
 
-        public void CalculatePanelLayout()
-        {
-            ConsolePoint nextPoint = new ConsolePoint(0, 0);
-
-            for(int i = 0; i < m_panels.Length; i++)
-            {
-                int nextWidth  = Math.Min((int)(((float)m_area.width  / 100f) * m_panels[i].PercentWidth),  m_area.width  - nextPoint.x);
-                int nextHeight = Math.Min((int)(((float)m_area.height / 100f) * m_panels[i].PercentHeight), m_area.height - nextPoint.y);
-
-                m_panels[i].SetPosition(nextPoint.x, nextPoint.y);
-                m_panels[i].SetSize(nextWidth, nextHeight);
+                m_controls[i].SetPosition(nextPoint.x, nextPoint.y);
+                m_controls[i].SetSize(nextWidth, nextHeight);
 
                 // Take the next top-right and bottom-left corners of the panel to made use for the next one
                 // Prioritise top-right point
                 ConsolePoint topRight   = new ConsolePoint(nextPoint.x + nextWidth, nextPoint.y);
-                ConsolePoint bottomLeft = new ConsolePoint(nextPoint.x, nextPoint.y + nextHeight);
+                ConsolePoint bottomLeft = new ConsolePoint(nextPoint.x, nextPoint.y + nextHeight + 1);
 
-                m_panels[i].LeftBorder = nextPoint.x != 0;
-                m_panels[i].TopBorder  = nextPoint.y != 0;
-
-                if(i == m_panels.Length - 1)
+                if(i == m_controls.Length - 1)
                 {
                     break; // Last panel, don't bother with borders
                 }
-                else if(topRight.IsWithinArea(m_area)) // Next panel to the right
+                else if(topRight.IsWithinArea(m_rect)) // Next panel to the right
                 {
                     nextPoint = topRight;
                 }
-                else if(bottomLeft.IsWithinArea(m_area)) // Next panel below
+                else if(bottomLeft.IsWithinArea(m_rect)) // Next panel below
                 {
                     nextPoint = bottomLeft;
                 }
@@ -80,30 +85,38 @@ namespace ConsoleUI
             }
         }
 
-        public ConsoleColor GetColour(ColourThemeIndex i)
+        /// <summary>
+        /// Update all valid components
+        /// </summary>
+        public override void Update()
         {
-            if(m_parent == null)
+            foreach(CControl control in m_controls)
             {
-                return (((int)i & 1) == 0) ? ConsoleColor.Black : ConsoleColor.White;
+                if(control != null)
+                {
+                    control.Update();
+                }
             }
-            return m_parent.m_colours[i];
         }
 
         /// <summary>
         /// Redraw the page
         /// </summary>
-        public void Redraw(bool fullRedraw)
+        public override void Draw(bool redraw)
         {
-            // TODO: draw title
-            for(int i = 0; i < m_panels.Length; i++)
+            for(int i = 0; i < m_controls.Length; i++)
             {
-                if(m_panels[i] != null)
+                if(m_controls[i] != null)
                 {
-                    m_panels[i].Redraw(fullRedraw);
+                    m_controls[i].Draw(redraw);
                 }
             }
         }
 
-        public abstract void KeyPressed(ConsoleKeyInfo keyInfo);
+        /// <summary>
+        /// Initialise the page and all components
+        /// </summary>
+        /// <param name="panelTypes"></param>
+        public abstract void Initialise(CControl.ControlTypeCode[] componentTypes);
     }
 }

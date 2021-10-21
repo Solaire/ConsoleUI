@@ -5,22 +5,44 @@ using System;
 
 namespace TestApp
 {
-    class CSubclassPanel : CPanel
+    class CSubclassPanel : CControl
     {
-        public CSubclassPanel(string title, PanelTypeCode type, int percentWidth, int percentHeight, CPage parent) : base(title, type, percentWidth, percentHeight, parent)
+        private int m_focusedElement;
+        private string[] m_elements;
+
+        public CSubclassPanel(string title, ControlTypeCode type, int percentWidth, int percentHeight, CPage parent) : base(title, type, percentWidth, percentHeight, parent)
         {
-            m_panelElements = new string[]
+            m_focusedElement = 0;
+            m_elements = new string[]
             {
-                "Element 0",
-                "Element 1",
-                "Element 2",
-                "Element 3",
-                "Element 4",
-                "Element 5",
-                "Element 6",
-                "Element 7",
-                "Element 8",
-                "Element 9",
+                "Item 0",
+                "Item 1",
+                "Item 2",
+                "Item 3",
+                "Item 4",
+                "Item 5",
+                "Item 6",
+                "Item 7",
+                "Item 8",
+                "Item 9",
+            };
+        }
+
+        public CSubclassPanel(string title, ControlTypeCode type, ConsoleRect rect, CPage parent) : base(title, type, rect, parent)
+        {
+            m_focusedElement = 0;
+            m_elements = new string[]
+            {
+                "Item 0",
+                "Item 1",
+                "Item 2",
+                "Item 3",
+                "Item 4",
+                "Item 5",
+                "Item 6",
+                "Item 7",
+                "Item 8",
+                "Item 9",
             };
         }
 
@@ -29,18 +51,13 @@ namespace TestApp
             throw new NotImplementedException();
         }
 
-        public override void OnResize(object sender, ResizeEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         public override void OnUpdateData(object sender, GenericEventArgs<string> e)
         {
-            for(int i = 0; i < m_panelElements.Length; i++)
+            for(int i = 0; i < m_elements.Length; i++)
             {
-                m_panelElements[i] = e.Data + " - Element " + i.ToString();
+                m_elements[i] = e.Data + " - Element " + i.ToString();
             }
-            Redraw(true);
+            Draw(true);
             FireDataChangedEvent(e.Data); // Will update the item info panel
         }
 
@@ -49,19 +66,64 @@ namespace TestApp
             throw new NotImplementedException();
         }
 
-        protected override void DrawHighlighted(bool isFocused)
+        public override void Draw(bool redraw)
         {
-            throw new NotImplementedException();
+            //if(redraw)
+            {
+                int startX = m_rect.x + 1;
+                int startY = m_rect.y + 1;
+                int lengthX = m_rect.width - 2;
+
+                DrawBorder(true);
+                // Panel content
+                for(int row = startY, i = 0; row < m_rect.Bottom && i < m_elements.Length; row++, i++)
+                {
+                    ConsoleColor background;
+                    ConsoleColor foreground;
+
+                    if(m_focusedElement == i && m_isFocused)
+                    {
+                        foreground = ConsoleColor.White;
+                        background = ConsoleColor.Yellow;
+                    }
+                    else if(m_focusedElement == i)
+                    {
+                        foreground = ConsoleColor.White;
+                        background = ConsoleColor.Red;
+                    }
+                    else
+                    {
+                        foreground = ConsoleColor.White;
+                        background = ConsoleColor.Blue;
+                    }
+
+                    // TODO: Fix constants
+                    CConsoleDraw.WriteText(m_elements[i].PadRight(lengthX), startX, row, foreground, background);
+                }
+            }
         }
 
-        protected override bool LoadContent()
+        public override void KeyPress(ConsoleKeyInfo keyInfo)
         {
-            throw new NotImplementedException();
-        }
+            switch(keyInfo.Key)
+            {
+                case ConsoleKey.UpArrow:
+                {
+                    m_focusedElement = Math.Max(m_focusedElement - 1, 0);
+                    FireDataChangedEvent(m_elements[m_focusedElement]);
+                }
+                break;
 
-        protected override void ReloadContent()
-        {
-            throw new NotImplementedException();
+                case ConsoleKey.DownArrow:
+                {
+                    m_focusedElement = Math.Min(m_focusedElement + 1, m_elements.Length - 1);
+                    FireDataChangedEvent(m_elements[m_focusedElement]);
+                }
+                break;
+
+                default:
+                    break;
+            }
         }
     }
 }

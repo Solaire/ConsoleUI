@@ -1,11 +1,11 @@
-﻿using ConsoleUI.Structs;
+﻿using ConsoleUI;
 
 namespace TestApp
 {
-    public static class PanelType
+    public static class ControlType
     {
-        public static readonly PanelTypeCode CLASS_PANEL      = new PanelTypeCode(0);
-        public static readonly PanelTypeCode SUBCLASS_PANEL   = new PanelTypeCode(1);
-        public static readonly PanelTypeCode INFO_PANEL       = new PanelTypeCode(2);
+        public static readonly CControl.ControlTypeCode CLASS_PANEL      = new CControl.ControlTypeCode(0);
+        public static readonly CControl.ControlTypeCode SUBCLASS_PANEL   = new CControl.ControlTypeCode(1);
+        public static readonly CControl.ControlTypeCode INFO_PANEL       = new CControl.ControlTypeCode(2);
     }
 }

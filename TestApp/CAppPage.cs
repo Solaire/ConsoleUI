@@ -1,7 +1,6 @@
-﻿using ConsoleUI;
-using ConsoleUI.Event;
+﻿using System;
+using ConsoleUI;
 using ConsoleUI.Structs;
-using System;
 
 namespace TestApp
 {
@@ -14,43 +13,43 @@ namespace TestApp
             cItemInfo = 2,
         }
 
-        public CAppPage(CWindow parent, ConsoleRect area, string title, int panelCount) : base(parent, area, title, panelCount)
+        public CAppPage(string title, ConsoleRect rect, int componentCount, CFrame parent) : base(title, rect, componentCount, parent)
         {
 
         }
 
-        public override void Initialise(PanelTypeCode[] panelTypes)
+        public override void Initialise(CControl.ControlTypeCode[] controlTypes)
         {
-            for(int i = 0; i < panelTypes.Length && i < m_panels.Length; i++)
+            for(int i = 0; i < controlTypes.Length && i < m_controls.Length; i++)
             {
-                PanelData data = CConstants.PANEL_DATA[panelTypes[i].Code];
+                CControl.ControlData data = CConstants.CONTROL_DATA[controlTypes[i].Code];
 
                 // C# switch cannot handle readonly fields
-                if(panelTypes[i] == PanelType.CLASS_PANEL)
+                if(controlTypes[i] == ControlType.CLASS_PANEL)
                 {
-                    m_panels[i] = new CClassPanel("Class", panelTypes[i], data.percentWidth, data.percentHeight, this);
+                    m_controls[i] = new CClassPanel("Class", controlTypes[i], data.percentWidth, data.percentHeight, this);
                 }
-                else if(panelTypes[i] == PanelType.SUBCLASS_PANEL)
+                else if(controlTypes[i] == ControlType.SUBCLASS_PANEL)
                 {
-                    m_panels[i] = new CSubclassPanel("Subclass", panelTypes[i], data.percentWidth, data.percentHeight, this);
+                    m_controls[i] = new CSubclassPanel("Subclass", controlTypes[i], data.percentWidth, data.percentHeight, this);
                 }
-                else if(panelTypes[i] == PanelType.INFO_PANEL)
+                else if(controlTypes[i] == ControlType.INFO_PANEL)
                 {
-                    m_panels[i] = new CItemInfoPanel("Information", panelTypes[i], data.percentWidth, data.percentHeight, this);
+                    m_controls[i] = new CItemInfoPanel("Information", controlTypes[i], data.percentWidth, data.percentHeight, this);
                 }
 
-                if(m_panels[i] != null)
+                if(m_controls[i] != null)
                 {
-                    FocusChange += m_panels[i].OnSetFocus;
+                    FocusChange += m_controls[i].OnSetFocus;
                 }
             }
 
-            m_panels[PanelType.CLASS_PANEL.Code].OnDataChangedString    += m_panels[PanelType.SUBCLASS_PANEL.Code].OnUpdateData;
-            m_panels[PanelType.SUBCLASS_PANEL.Code].OnDataChangedString += m_panels[PanelType.INFO_PANEL.Code].OnUpdateData;
+            m_controls[ControlType.CLASS_PANEL.Code].OnDataChangedString    += m_controls[ControlType.SUBCLASS_PANEL.Code].OnUpdateData;
+            m_controls[ControlType.SUBCLASS_PANEL.Code].OnDataChangedString += m_controls[ControlType.INFO_PANEL.Code].OnUpdateData;
 
-            FireFocusChangeEvent(PanelType.CLASS_PANEL);
-            CalculatePanelLayout();
-            Redraw(true);
+            FireFocusChangeEvent(ControlType.CLASS_PANEL);
+            CalculateComponentPositions();
+            //Draw(true);
         }
 
         public override void Initialise()
@@ -58,22 +57,17 @@ namespace TestApp
             throw new System.NotImplementedException();
         }
 
-        public override void KeyPressed(ConsoleKeyInfo keyInfo)
+        public override void KeyPress(ConsoleKeyInfo keyInfo)
         {
             if(keyInfo.Key == ConsoleKey.Tab)
             {
-                m_focusedPanelIndex = (m_focusedPanelIndex == (int)PanelIndex.cClass) ? (int)PanelIndex.cSubclass : (int)PanelIndex.cClass;
-                FireFocusChangeEvent(m_panels[m_focusedPanelIndex].PanelType);
+                m_focusedComponent = (m_focusedComponent == (int)PanelIndex.cClass) ? (int)PanelIndex.cSubclass : (int)PanelIndex.cClass;
+                FireFocusChangeEvent(m_controls[m_focusedComponent].PanelType);
             }
             else
             {
-                m_panels[m_focusedPanelIndex].KeyPressed(keyInfo);
+                m_controls[m_focusedComponent].KeyPress(keyInfo);
             }
-        }
-
-        public override void OnResize(object sender, ResizeEventArgs e)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }
