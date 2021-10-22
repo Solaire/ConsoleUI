@@ -12,11 +12,11 @@ namespace TestApp
         public static int TEXT_PADDING_RIGHT = 1;
 
         // Initialise the panel array and each individual panel
-        public static readonly ControlInitData[] CONTROL_DATA =
+        public static readonly ViewInitData[] CONTROL_DATA =
         {
-            new ControlInitData(ControlTypeEnumClass.LIST,    "Class",     50, 100),
-            new ControlInitData(ControlTypeEnumClass.LIST,    "Subclass",  50, 100),
-            new ControlInitData(ControlTypeEnumClass.INFOBOX, "Item info", 50, 30),
+            new ViewInitData("Categories" , 50, 100),
+            new ViewInitData("Items"      , 50, 100),
+            new ViewInitData("Information", 50, 30),
         };
 
         private static readonly System.ConsoleColor[] DEFAULT_COLOUR_ARRAY =

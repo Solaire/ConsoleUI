@@ -24,6 +24,5 @@ namespace ConsoleUI.Base
 
         public abstract void Draw(bool redraw);
         public abstract void KeyPress(System.ConsoleKeyInfo keyInfo);
-        public abstract void Update();
     }
 }

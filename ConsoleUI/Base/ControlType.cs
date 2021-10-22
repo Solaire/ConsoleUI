@@ -1,14 +1,12 @@
-﻿using System;
-using ConsoleUI.Type;
+﻿using ConsoleUI.Type;
 
 namespace ConsoleUI.Base
 {
     /// <summary>
-    /// Structure holding initialisation data for a struct
+    /// Structure holding initialisation data for a view object
     /// </summary>
-    public struct ControlInitData
+    public struct ViewInitData
     {
-        public readonly byte        type;
         public readonly string      title;
         public readonly int         percentWidth;
         public readonly int         percentHeight;
@@ -18,13 +16,11 @@ namespace ConsoleUI.Base
         /// Constructor.
         /// Sets the percentage size values (for dynamic components)
         /// </summary>
-        /// <param name="type">The control type code</param>
         /// <param name="title">The control title</param>
         /// <param name="percentWidth">Control width as percentage of parent area</param>
         /// <param name="percentHeight">Control height as percentage of parent area</param>
-        public ControlInitData(byte type, string title, int percentWidth, int percentHeight)
+        public ViewInitData(string title, int percentWidth, int percentHeight)
         {
-            this.type          = type;
             this.title         = title;
             this.percentWidth  = percentWidth;
             this.percentHeight = percentHeight;
@@ -36,38 +32,16 @@ namespace ConsoleUI.Base
         /// Constructor.
         /// Set the control's size and position values (for static components)
         /// </summary>
-        /// <param name="type">The control type code</param>
         /// <param name="title">The control title</param>
         /// <param name="rect">Size and position of the control</param>
-        public ControlInitData(byte type, string title, ConsoleRect rect)
+        public ViewInitData(string title, ConsoleRect rect)
         {
-            this.type  = type;
             this.title = title;
             this.rect  = rect;
 
             // Not used
             percentWidth  = 0; 
             percentHeight = 0;
-        }
-    }
-    
-    /// <summary>
-    /// Collection of control type values, represented as bytes
-    /// This class is designed as an inheritable enum class, allowing for definint custom types
-    /// </summary>
-    public abstract class ControlTypeEnumClass
-    {
-        public const byte LIST      = 0;
-        public const byte TEXT_EDIT = 1;
-        public const byte INFOBOX   = 2;
-
-        /// <summary>
-        /// Class cannot be static because it cannot be inherited
-        /// Disallow construction
-        /// </summary>
-        private ControlTypeEnumClass()
-        {
-
         }
     }
 }
