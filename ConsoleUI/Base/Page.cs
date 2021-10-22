@@ -1,8 +1,7 @@
-﻿using ConsoleUI.Structs;
-using ConsoleUI.Event;
-using System;
+﻿using System;
+using ConsoleUI.Type;
 
-namespace ConsoleUI
+namespace ConsoleUI.Base
 {
     /// <summary>
     /// Container class for multiple UI components
@@ -14,8 +13,7 @@ namespace ConsoleUI
         protected CControl[] m_controls;
         protected int        m_focusedComponent;
 
-        protected delegate void FocusChangeEventHandler(object sender, GenericEventArgs<CControl.ControlTypeCode> e);
-        protected event FocusChangeEventHandler FocusChange;
+        public string Title { get { return m_title; } }
 
         /// <summary>
         /// Constructor
@@ -29,18 +27,6 @@ namespace ConsoleUI
             m_focusedComponent = 0;
             m_controls = new CControl[componentCount];
             m_parent = parent;
-        }
-
-        /// <summary>
-        /// Fire FocusChange event to all subscribed instances
-        /// </summary>
-        /// <param name="focusedComponentType">The component type that will be marked as in focus</param>
-        protected virtual void FireFocusChangeEvent(CControl.ControlTypeCode focusedComponentType)
-        {
-            if(FocusChange != null)
-            {
-                FocusChange.Invoke(this, new GenericEventArgs<CControl.ControlTypeCode>(focusedComponentType));
-            }
         }
 
         /// <summary>
@@ -117,6 +103,6 @@ namespace ConsoleUI
         /// Initialise the page and all components
         /// </summary>
         /// <param name="panelTypes"></param>
-        public abstract void Initialise(CControl.ControlTypeCode[] componentTypes);
+        public abstract void Initialise(byte[] componentTypes);
     }
 }

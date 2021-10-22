@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Text;
-using ConsoleUI.Structs;
+using ConsoleUI.Type;
 
-namespace ConsoleUI
+namespace ConsoleUI.Helper
 {
     /// <summary>
     /// Console drawing helper class

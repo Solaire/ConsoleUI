@@ -1,6 +1,6 @@
-﻿using ConsoleUI.Structs;
+﻿using ConsoleUI.Type;
 
-namespace ConsoleUI
+namespace ConsoleUI.Base
 {
     /// <summary>
     /// Base class containing very basic and essential members and function definitions
@@ -22,7 +22,6 @@ namespace ConsoleUI
             m_rect  = rect;
         }
 
-        public abstract void Initialise();
         public abstract void Draw(bool redraw);
         public abstract void KeyPress(System.ConsoleKeyInfo keyInfo);
         public abstract void Update();

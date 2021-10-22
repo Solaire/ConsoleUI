@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ConsoleUI
+namespace ConsoleUI.Helper
 {
     /// <summary>
     /// String extension methods
@@ -72,6 +72,24 @@ namespace ConsoleUI
         {
             start = Math.Min(src.Length, Math.Max(start, 0));
             return src.Substring(start);
+        }
+
+        /// <summary>
+        /// Replace the middle part of the source string with the insert string, starting from the specified point
+        /// </summary>
+        /// <param name="src">The source string</param>
+        /// <param name="insert">The string to add</param>
+        /// <param name="start">Starting index</param>
+        /// <param name="maxLength">Maximum length of the new string</param>
+        /// <returns>A copy of the source string with insert in the specified position. The string might be empty</returns>
+        public static string MidStringReplace(this string src, string insert, int start, int maxLength)
+        {
+            start = Math.Min(src.Length, Math.Max(start, 0));
+
+            string left  = src.Left(start);
+            string right = src.Right(src.Length - start - insert.Length);
+            string ret = left + insert + right;
+            return ret.Mid(0, maxLength);
         }
     }
 }

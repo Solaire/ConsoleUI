@@ -1,4 +1,4 @@
-﻿namespace ConsoleUI.Structs
+﻿namespace ConsoleUI.Type
 {
     /// <summary>
     /// A rectangle structure used for drawing and creating areas

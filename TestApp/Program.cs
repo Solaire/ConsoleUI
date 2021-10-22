@@ -1,5 +1,4 @@
-﻿using ConsoleUI;
-using ConsoleUI.Structs;
+﻿using ConsoleUI.Type;
 
 namespace TestApp
 {

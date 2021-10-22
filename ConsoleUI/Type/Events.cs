@@ -1,4 +1,4 @@
-﻿namespace ConsoleUI.Event
+﻿namespace ConsoleUI.Type
 {
     public class GenericEventArgs<T> : System.EventArgs
     {

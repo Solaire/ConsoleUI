@@ -1,7 +1,7 @@
 ﻿using System;
-using ConsoleUI.Structs;
+using ConsoleUI.Type;
 
-namespace ConsoleUI
+namespace ConsoleUI.Helper
 {
     /// <summary>
     /// Console window management helper class

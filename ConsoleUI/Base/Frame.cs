@@ -1,16 +1,16 @@
 ﻿using System;
-using ConsoleUI.Structs;
-using ConsoleUI.Event;
+using ConsoleUI.Helper;
+using ConsoleUI.Type;
 
-namespace ConsoleUI
+namespace ConsoleUI.Base
 {
     /// <summary>
     /// Toplevel UI class responsible for managing other UI elements.
     /// </summary>
     public abstract class CFrame : CComponent
     {
-        protected int           m_activePageIndex;
-        protected CPage[]       m_pages;
+        protected int     m_activePageIndex;
+        protected CPage[] m_pages;
 
         /// <summary>
         /// Constructor
@@ -27,7 +27,7 @@ namespace ConsoleUI
         /// <summary>
         /// Initialise the console window
         /// </summary>
-        public override void Initialise()
+        public virtual void Initialise()
         {
             CConsoleWindow.InitialiseWindow(m_rect.width, m_rect.height, m_title);
         }
@@ -48,6 +48,10 @@ namespace ConsoleUI
             }
         }
 
+        /// <summary>
+        /// Draw the frame and all other components.
+        /// </summary>
+        /// <param name="redraw">If true, flush the buffer redraw everything</param>
         public override void Draw(bool redraw)
         {
             if(redraw)
@@ -69,8 +73,13 @@ namespace ConsoleUI
         /// </summary>
         protected virtual void DrawHeader()
         {
-            CConsoleDraw.WriteText(string.Format(" {0} ", m_title).PadCenter(m_rect.width, '-'), 0, 0, ConsoleColor.White, ConsoleColor.Blue);
-            // TODO, draw current page number and title on the right hand side
+            // This is what the basic header should look like (more or less):
+            // 0|--[xx/yy]-page_name--------------- _title ----------------------------------|xx
+
+            string titleHdr    = string.Format(" {0} ", m_title).PadCenter(m_rect.width, '-');
+            string currentPage = string.Format(" [{0}/{1}] - {2} ", (m_activePageIndex + 1).ToString().PadLeft(2, '0'), m_pages.Length.ToString().PadLeft(2, '0'), m_pages[m_activePageIndex].Title);
+
+            CConsoleDraw.WriteText(titleHdr.MidStringReplace(currentPage, 3, m_rect.width), 0, 0, ConsoleColor.White, ConsoleColor.Blue);
         }
 
         public abstract void OnCommand(object sender, GenericEventArgs<string> e);
