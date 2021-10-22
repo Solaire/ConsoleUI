@@ -74,7 +74,7 @@ namespace ConsoleUI.Base
         protected virtual void DrawHeader()
         {
             // This is what the basic header should look like (more or less):
-            // 0|--[xx/yy]-page_name--------------- _title ----------------------------------|xx
+            // 0|--- [xx/yy] - page_name ---------- heading ----------------------------------|xx
 
             string titleHdr    = string.Format(" {0} ", m_title).PadCenter(m_rect.width, '-');
             string currentPage = string.Format(" [{0}/{1}] - {2} ", (m_activePageIndex + 1).ToString().PadLeft(2, '0'), m_pages.Length.ToString().PadLeft(2, '0'), m_pages[m_activePageIndex].Title);
