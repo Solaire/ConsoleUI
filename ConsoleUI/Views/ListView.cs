@@ -3,7 +3,7 @@ using System.Collections;
 using ConsoleUI.Base;
 using ConsoleUI.Helper;
 
-namespace ConsoleUI.Controls
+namespace ConsoleUI.Views
 {
     /// <summary>
     /// Data source interface for the list view

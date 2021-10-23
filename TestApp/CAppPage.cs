@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using ConsoleUI.Base;
 using ConsoleUI.Type;
-using ConsoleUI.Controls;
+using ConsoleUI.Views;
 
 namespace TestApp
 {
