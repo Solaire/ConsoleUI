@@ -1,6 +1,7 @@
 ﻿using System;
 using ConsoleUI.Helper;
 using ConsoleUI.Type;
+using ConsoleUI.Base;
 
 namespace ConsoleUI.Base
 {
